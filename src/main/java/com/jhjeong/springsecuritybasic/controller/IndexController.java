@@ -1,11 +1,13 @@
 package com.jhjeong.springsecuritybasic.controller;
 
+import com.jhjeong.springsecuritybasic.config.auth.PrincipalDetails;
 import com.jhjeong.springsecuritybasic.domain.user.Role;
 import com.jhjeong.springsecuritybasic.domain.user.User;
 import com.jhjeong.springsecuritybasic.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +58,13 @@ public class IndexController {
   @GetMapping("/join-proc")
   public @ResponseBody String joinProc() {
     return "회원가입 완료";
+  }
+
+  @GetMapping("/user")
+  public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    System.out.println(principalDetails.getUsername());
+    System.out.println(principalDetails.getPassword());
+    return "user";
   }
 
   @Secured("ROLE_ADMIN")

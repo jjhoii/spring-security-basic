@@ -3,15 +3,33 @@ package com.jhjeong.springsecuritybasic.config.auth;
 import com.jhjeong.springsecuritybasic.domain.user.User;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
   private User user;
+  private Map<String, Object> attributes;
 
   public PrincipalDetails(User user) {
     this.user = user;
+  }
+
+  public PrincipalDetails(User user, Map<String, Object> attributes) {
+    this.user = user;
+    this.attributes = attributes;
+  }
+
+  @Override
+  public Map<String, Object> getAttributes() {
+    return attributes;
+  }
+
+  @Override
+  public String getName() {
+    return null;
   }
 
   // 유저의 권한을 리턴
