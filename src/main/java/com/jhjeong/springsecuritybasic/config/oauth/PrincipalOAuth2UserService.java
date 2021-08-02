@@ -3,10 +3,12 @@ package com.jhjeong.springsecuritybasic.config.oauth;
 import com.jhjeong.springsecuritybasic.config.auth.PrincipalDetails;
 import com.jhjeong.springsecuritybasic.config.oauth.provider.FacebookUserInfo;
 import com.jhjeong.springsecuritybasic.config.oauth.provider.GoogleUserInfo;
+import com.jhjeong.springsecuritybasic.config.oauth.provider.NaverUserInfo;
 import com.jhjeong.springsecuritybasic.config.oauth.provider.OAuth2UserInfo;
 import com.jhjeong.springsecuritybasic.domain.user.Role;
 import com.jhjeong.springsecuritybasic.domain.user.User;
 import com.jhjeong.springsecuritybasic.domain.user.UserRepository;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,6 +44,8 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
       oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
     } else if (userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
       oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+    } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+      oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttribute("response"));
     } else {
       // do something
     }
