@@ -1,6 +1,9 @@
 package com.jhjeong.springsecuritybasic.config.oauth;
 
 import com.jhjeong.springsecuritybasic.config.auth.PrincipalDetails;
+import com.jhjeong.springsecuritybasic.config.oauth.provider.FacebookUserInfo;
+import com.jhjeong.springsecuritybasic.config.oauth.provider.GoogleUserInfo;
+import com.jhjeong.springsecuritybasic.config.oauth.provider.OAuth2UserInfo;
 import com.jhjeong.springsecuritybasic.domain.user.Role;
 import com.jhjeong.springsecuritybasic.domain.user.User;
 import com.jhjeong.springsecuritybasic.domain.user.UserRepository;
@@ -33,10 +36,20 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     // super.loadUser 메서드는 유저 프로필을 받아옴
     OAuth2User oAuth2User = super.loadUser(userRequest);
-    String provider = userRequest.getClientRegistration().getClientId();
-    String providerId = oAuth2User.getAttribute("sub");
-    String email = oAuth2User.getAttribute("email");
-    String username = provider + "_" + provider;
+
+    OAuth2UserInfo oAuth2UserInfo = null;
+    if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
+      oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+    } else if (userRequest.getClientRegistration().getRegistrationId().equals("facebook")) {
+      oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+    } else {
+      // do something
+    }
+
+    String provider = oAuth2UserInfo.getProvider();
+    String providerId = oAuth2UserInfo.getProviderId();
+    String email = oAuth2UserInfo.getEmail();
+    String username = provider + "_" + providerId;
     String password = bCryptPasswordEncoder.encode("default_password");
     Role role = Role.USER;
 
